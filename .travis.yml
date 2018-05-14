@@ -4,6 +4,9 @@ language: node_js
 node_js:
   - "6"
   - "7"
+  - "8"
+  - "9"
+  - "10"
 cache:
   directories:
     - $HOME/.yarn-cache
@@ -30,7 +33,7 @@ before_script:
   - sleep 3
 
 script:
-  - yarn run lint
-  - yarn test
-  - yarn run build
-  - yarn run test-e2e
+  - npm  run lint
+  - npm test
+  - npm run build
+  - npm run test-e2e

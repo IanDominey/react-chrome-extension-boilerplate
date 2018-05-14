@@ -2,6 +2,9 @@ environment:
   matrix:
     - nodejs_version: '6'
     - nodejs_version: '7'
+    - nodejs_version: '8'
+    - nodejs_version: '9'
+    - nodejs_version: '10'
 
 cache:
   - "%LOCALAPPDATA%/Yarn"
@@ -9,13 +12,12 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - yarn install
 
 test_script:
   - node --version
-  - yarn --version
-  - yarn run lint
-  - yarn test
-  - yarn run build
+  - npm --version
+  - npm run lint
+  - npm test
+  - npm run build
 
 build: off

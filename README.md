@@ -1,5 +1,7 @@
 # React Chrome Extension Boilerplate
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/IanDominey/react-chrome-extension-boilerplate.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/IanDominey/react-chrome-extension-boilerplate.svg?branch=master)](https://travis-ci.org/jhen0409/react-chrome-extension-boilerplate)
 [![Build status](https://ci.appveyor.com/api/projects/status/25ymt8vdqgq6u5br?svg=true)](https://ci.appveyor.com/project/MrReasonable/react-chrome-extension-boilerplate)
 [![NPM version](http://img.shields.io/npm/v/react-chrome-extension-boilerplate.svg?style=flat)](https://www.npmjs.com/package/react-chrome-extension-boilerplate)

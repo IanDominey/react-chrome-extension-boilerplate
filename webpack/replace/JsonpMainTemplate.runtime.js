@@ -1,66 +1,75 @@
 /*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
 */
-/*globals hotAddUpdateChunk parentHotUpdateCallback document XMLHttpRequest $require$ $hotChunkFilename$ $hotMainFilename$ */
-module.exports = function() {
-	function webpackHotUpdateCallback(chunkId, moreModules) { // eslint-disable-line no-unused-vars
-		hotAddUpdateChunk(chunkId, moreModules);
-		if(parentHotUpdateCallback) parentHotUpdateCallback(chunkId, moreModules);
-	}
 
-  var context = this;
+/* global hotAddUpdateChunk, parentHotUpdateCallback, document, XMLHttpRequest, $require$, */
+/* global $hotChunkFilename$, $hotMainFilename$, hotCurrentHash, */
+/* global __webpack_require__ */
+
+module.exports = () => {
+  function webpackHotUpdateCallback(chunkId, moreModules) { // eslint-disable-line no-unused-vars
+    hotAddUpdateChunk(chunkId, moreModules);
+    if (parentHotUpdateCallback) parentHotUpdateCallback(chunkId, moreModules);
+  }
+
+  const that = this;
+
   function evalCode(code, context) {
-    return (function() { return eval(code); }).call(context);
+    return (() => {
+      return eval(code); //eslint-disable-line no-eval
+    }).call(context);
   }
 
-  context.hotDownloadUpdateChunk = function (chunkId) { // eslint-disable-line no-unused-vars
-    var src = __webpack_require__.p + "" + chunkId + "." + hotCurrentHash + ".hot-update.js";
-    var request = new XMLHttpRequest();
+  that.hotDownloadUpdateChunk = (chunkId) => { // eslint-disable-line no-unused-vars
+    const src = `${__webpack_require__.p}${chunkId}.${hotCurrentHash}.hot-update.js`;
 
-    request.onload = function() {
-			evalCode(this.responseText, context);
-		};
-    request.open("get", src, true);
+    const request = new XMLHttpRequest();
+
+    request.onload = () => {
+      evalCode(this.responseText, that);
+    };
+    request.open('get', src, true);
     request.send();
-  }
+  };
 
-	function hotDownloadManifest(timeout) { // eslint-disable-line no-unused-vars
-		timeout = timeout || 1000;
-		return new Promise((resolve, reject)=> {
-      if(typeof XMLHttpRequest === "undefined")
-        return reject(new Error("No browser support"));
+  function hotDownloadManifest(timeout = 1000) {
+    return new Promise((resolve, reject) => {
+      if (typeof XMLHttpRequest === 'undefined') {
+        return reject(new Error('No browser support'));
+      }
+      const request = new XMLHttpRequest();
+      const requestPath = $require$.p + $hotMainFilename$;
       try {
-        var request = new XMLHttpRequest();
-        var requestPath = $require$.p + $hotMainFilename$;
-        request.open("GET", requestPath, true);
+        request.open('GET', requestPath, true);
         request.timeout = timeout;
         request.send(null);
-      } catch(err) {
+      } catch (err) {
         return reject(err);
       }
-      request.onreadystatechange = function() {
-        if(request.readyState !== 4) return;
-        if(request.status === 0) {
+      request.onreadystatechange = () => {
+        if (request.readyState !== 4) return;
+        if (request.status === 0) {
           // timeout
-          reject(new Error("Manifest request to " + requestPath + " timed out."));
-        } else if(request.status === 404) {
+          reject(new Error(`Manifest request to ${requestPath} timed out.`));
+        } else if (request.status === 404) {
           // no update available
           reject(new Error('no update available'));
-        } else if(request.status !== 200 && request.status !== 304) {
+        } else if (request.status !== 200 && request.status !== 304) {
           // other failure
-          reject(new Error("Manifest request to " + requestPath + " failed."));
+          reject(new Error(`"Manifest request to ${requestPath} failed.`));
         } else {
           // success
+          let update = null;
           try {
-            var update = JSON.parse(request.responseText);
-          } catch(e) {
+            update = JSON.parse(request.responseText);
+          } catch (e) {
             callback(e);
             return;
           }
           resolve(update);
         }
       };
-		});
-	}
+    });
+  }
 };

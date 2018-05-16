@@ -5,93 +5,54 @@
  */
 
 /* global window __webpack_hash__ */
+/* eslint-disable no-console */
 
 if (!module.hot) {
-  throw new Error("[HMR] Hot Module Replacement is disabled.");
+  throw new Error('[HMR] Hot Module Replacement is disabled.');
 }
 
-var hmrDocsUrl = "http://webpack.github.io/docs/hot-module-replacement-with-webpack.html"; // eslint-disable-line max-len
+const hmrDocsUrl = 'http://webpack.github.io/docs/hot-module-replacement-with-webpack.html'; // eslint-disable-line max-len
 
-var lastHash;
-var failureStatuses = { abort: 1, fail: 1 };
-var applyOptions = { ignoreUnaccepted: true };
+let lastHash;
+const failureStatuses = { abort: 1, fail: 1 };
+const applyOptions = { ignoreUnaccepted: true };
 
 function upToDate(hash) {
   if (hash) lastHash = hash;
-  return lastHash == __webpack_hash__;
+  return lastHash === __webpack_hash__; //eslint-disable-line camelcase
 }
 
-module.exports = function(hash, moduleMap, options) {
-  var reload = options.reload;
-  if (!upToDate(hash) && module.hot.status() == "idle") {
-    if (options.log) console.log("[HMR] Checking for updates on the server...");
-    check();
-  }
+module.exports = (hash, moduleMap, options) => {
+  const reload = options.reload;
 
-  function check() {
-    var cb = function(err, updatedModules) {
-      if (err) return handleError(err);
-
-      if(!updatedModules) {
-        if (options.warn) {
-          console.warn("[HMR] Cannot find update (Full reload needed)");
-          console.warn("[HMR] (Probably because of restarting the server)");
-        }
-        performReload();
-        return null;
-      }
-
-      var applyCallback = function(applyErr, renewedModules) {
-        if (applyErr) return handleError(applyErr);
-
-        if (!upToDate()) check();
-
-        logUpdates(updatedModules, renewedModules);
-      };
-
-      var applyResult = module.hot.apply(applyOptions, applyCallback);
-      // webpack 2 promise
-      if (applyResult && applyResult.then) {
-        // HotModuleReplacement.runtime.js refers to the result as `outdatedModules`
-        applyResult.then(function(outdatedModules) {
-          applyCallback(null, outdatedModules);
-        });
-        applyResult.catch(applyCallback);
-      }
-
-    };
-
-    var result = module.hot.check(false, cb);
-    // webpack 2 promise
-    if (result && result.then) {
-        result.then(function(updatedModules) {
-            cb(null, updatedModules);
-        });
-        result.catch(cb);
+  function performReload() {
+    if (reload) {
+      if (options.warn) console.warn('[HMR] Reloading page');
+      window.location.reload();
     }
   }
 
   function logUpdates(updatedModules, renewedModules) {
-    var unacceptedModules = updatedModules.filter(function(moduleId) {
-      return renewedModules && renewedModules.indexOf(moduleId) < 0;
-    });
+    const unacceptedModules = updatedModules.filter(
+        moduleId => renewedModules && renewedModules.indexOf(moduleId) < 0
+    );
 
-    if(unacceptedModules.length > 0) {
+    if (unacceptedModules.length > 0) {
       if (options.warn) {
         console.warn(
-          "[HMR] The following modules couldn't be hot updated: " +
-          "(Full reload needed)\n" +
-          "This is usually because the modules which have changed " +
-          "(and their parents) do not know how to hot reload themselves. " +
-          "See " + hmrDocsUrl + " for more details."
+            '[HMR] The following modules couldn\'t be hot updated: ' +
+            '(Full reload needed)\n' +
+            'This is usually because the modules which have changed ' +
+            '(and their parents) do not know how to hot reload themselves. ' +
+            `See ${hmrDocsUrl} for more details.`
         );
-        unacceptedModules.forEach(function(moduleId) {
-          console.warn("[HMR]  - " + moduleMap[moduleId]);
+        unacceptedModules.forEach((moduleId) => {
+          console.warn(`[HMR]  - ${moduleMap[moduleId]}`);
         });
       }
       /* replaced part start */
       if (chrome && chrome.runtime && chrome.runtime.reload) {
-        console.warn("[HMR] extension reload");
+        console.warn('[HMR] extension reload');
         chrome.runtime.reload();
         return;
       }
@@ -101,17 +62,17 @@ module.exports = function(hash, moduleMap, options) {
     }
 
     if (options.log) {
-      if(!renewedModules || renewedModules.length === 0) {
-        console.log("[HMR] Nothing hot updated.");
+      if (!renewedModules || renewedModules.length === 0) {
+        console.log('[HMR] Nothing hot updated.');
       } else {
-        console.log("[HMR] Updated modules:");
-        renewedModules.forEach(function(moduleId) {
-          console.log("[HMR]  - " + moduleMap[moduleId]);
+        console.log('[HMR] Updated modules:');
+        renewedModules.forEach((moduleId) => {
+          console.log(`[HMR]  - ${moduleMap[moduleId]}`);
         });
       }
 
       if (upToDate()) {
-        console.log("[HMR] App is up to date.");
+        console.log('[HMR] App is up to date.');
       }
     }
   }
@@ -119,21 +80,65 @@ module.exports = function(hash, moduleMap, options) {
   function handleError(err) {
     if (module.hot.status() in failureStatuses) {
       if (options.warn) {
-        console.warn("[HMR] Cannot check for update (Full reload needed)");
-        console.warn("[HMR] " + err.stack || err.message);
+        console.warn('[HMR] Cannot check for update (Full reload needed)');
+        console.warn(`[HMR] ${err.stack || err.message}`);
       }
       performReload();
       return;
     }
     if (options.warn) {
-      console.warn("[HMR] Update check failed: " + err.stack || err.message);
+      console.warn(`"[HMR] Update check failed: ${err.stack || err.message}`);
     }
   }
 
-  function performReload() {
-    if (reload) {
-      if (options.warn) console.warn("[HMR] Reloading page");
-      window.location.reload();
+  function check() {
+    const cb = (err, updatedModules) => {
+      if (err) return handleError(err);
+
+      if (!updatedModules) {
+        if (options.warn) {
+          console.warn('[HMR] Cannot find update (Full reload needed)');
+          console.warn('[HMR] (Probably because of restarting the server)');
+        }
+        performReload();
+        return null;
+      }
+
+      const applyCallback = (applyErr, renewedModules) => {
+        if (applyErr) {
+          return handleError(applyErr);
+        }
+
+        if (!upToDate()) {
+          check();
+        }
+
+        logUpdates(updatedModules, renewedModules);
+      };
+
+      const applyResult = module.hot.apply(applyOptions, applyCallback);
+      // webpack 2 promise
+      if (applyResult && applyResult.then) {
+        // HotModuleReplacement.runtime.js refers to the result as `outdatedModules`
+        applyResult.then((outdatedModules) => {
+          applyCallback(null, outdatedModules);
+        });
+        applyResult.catch(applyCallback);
+      }
+    };
+
+    const result = module.hot.check(false, cb);
+    // webpack 2 promise
+    if (result && result.then) {
+      result.then((updatedModules) => {
+        cb(null, updatedModules);
+      });
+      result.catch(cb);
     }
+  }
+
+  if (!upToDate(hash) && module.hot.status() === 'idle') {
+    if (options.log) console.log('[HMR] Checking for updates on the server...');
+    check();
   }
 };

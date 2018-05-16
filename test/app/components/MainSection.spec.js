@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import MainSection from '../../../app/components/MainSection';
 import style from '../../../app/components/MainSection.css';
 import TodoItem from '../../../app/components/TodoItem';
@@ -13,20 +13,20 @@ function setup(propOverrides) {
     todos: [{
       text: 'Use Redux',
       completed: false,
-      id: 0
+      id: 0,
     }, {
       text: 'Run the tests',
       completed: true,
-      id: 1
+      id: 1,
     }],
     actions: {
       editTodo: sinon.spy(),
       deleteTodo: sinon.spy(),
       completeTodo: sinon.spy(),
       completeAll: sinon.spy(),
-      clearCompleted: sinon.spy()
+      clearCompleted: sinon.spy(),
     },
-    ...propOverrides
+    ...propOverrides,
   };
 
   const renderer = TestUtils.createRenderer();
@@ -57,8 +57,8 @@ describe('todoapp MainSection component', () => {
         todos: [{
           text: 'Use Redux',
           completed: true,
-          id: 0
-        }]
+          id: 0,
+        }],
       });
       const [toggle] = output.props.children;
       expect(toggle.props.checked).to.equal(true);
@@ -75,7 +75,7 @@ describe('todoapp MainSection component', () => {
   describe('footer', () => {
     it('should render', () => {
       const { output } = setup();
-      const [,, footer] = output.props.children;
+      const [, , footer] = output.props.children;
       expect(footer.type).to.equal(Footer);
       expect(footer.props.completedCount).to.equal(1);
       expect(footer.props.activeCount).to.equal(1);
@@ -84,16 +84,16 @@ describe('todoapp MainSection component', () => {
 
     it('onShow should set the filter', () => {
       const { output, renderer } = setup();
-      const [,, footer] = output.props.children;
+      const [, , footer] = output.props.children;
       footer.props.onShow(SHOW_COMPLETED);
       const updated = renderer.getRenderOutput();
-      const [,, updatedFooter] = updated.props.children;
+      const [, , updatedFooter] = updated.props.children;
       expect(updatedFooter.props.filter).to.equal(SHOW_COMPLETED);
     });
 
     it('onClearCompleted should call clearCompleted', () => {
       const { output, props } = setup();
-      const [,, footer] = output.props.children;
+      const [, , footer] = output.props.children;
       footer.props.onClearCompleted();
       expect(props.actions.clearCompleted.called).to.equal(true);
     });
@@ -103,10 +103,10 @@ describe('todoapp MainSection component', () => {
         todos: [{
           text: 'Use Redux',
           completed: false,
-          id: 0
-        }]
+          id: 0,
+        }],
       });
-      const [,, footer] = output.props.children;
+      const [, , footer] = output.props.children;
       footer.props.onClearCompleted();
       expect(props.actions.clearCompleted.callCount).to.equal(0);
     });
@@ -126,7 +126,7 @@ describe('todoapp MainSection component', () => {
 
     it('should filter items', () => {
       const { output, renderer, props } = setup();
-      const [,, footer] = output.props.children;
+      const [, , footer] = output.props.children;
       footer.props.onShow(SHOW_COMPLETED);
       const updated = renderer.getRenderOutput();
       const [, updatedList] = updated.props.children;

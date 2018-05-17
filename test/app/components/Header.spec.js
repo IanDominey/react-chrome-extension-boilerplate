@@ -1,44 +1,44 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
 import React from 'react';
-import ShallowRenderer from 'react-test-renderer';
+import { mount } from 'enzyme';
 import Header from '../../../app/components/Header';
 import TodoTextInput from '../../../app/components/TodoTextInput';
 
 function setup() {
   const props = {
-    addTodo: sinon.spy()
+    addTodo: jest.fn()
   };
 
-  const renderer = ShallowRenderer.createRenderer();
-  renderer.render(<Header {...props} />);
-  const output = renderer.getRenderOutput();
+  const renderer = mount(<Header {...props} />);
 
-  return { props, output, renderer };
+  return { props, renderer };
 }
+
+const newValue = (value, enterKey = false) => ({
+  target: { value },
+  which: (enterKey ? 13 : undefined)
+});
 
 describe('todoapp Header component', () => {
   it('should render correctly', () => {
-    const { output } = setup();
+    const { renderer } = setup();
 
-    expect(output.type).to.equal('header');
+    expect(renderer.type()).toBe(Header);
 
-    const [h1, input] = output.props.children;
+    expect(renderer.find('h1').text()).toBe('todos');
 
-    expect(h1.type).to.equal('h1');
-    expect(h1.props.children).to.equal('todos');
+    const input = renderer.find('TodoTextInput');
 
-    expect(input.type).to.equal(TodoTextInput);
-    expect(input.props.newTodo).to.equal(true);
-    expect(input.props.placeholder).to.equal('What needs to be done?');
+    expect(input.type()).toBe(TodoTextInput);
+    expect(input.prop('newTodo')).toBe(true);
+    expect(input.prop('placeholder')).toBe('What needs to be done?');
   });
 
   it('should call addTodo if length of text is greater than 0', () => {
-    const { output, props } = setup();
-    const input = output.props.children[1];
-    input.props.onSave('');
-    expect(props.addTodo.callCount).to.equal(0);
-    input.props.onSave('Use Redux');
-    expect(props.addTodo.callCount).to.equal(1);
+    const { renderer, props } = setup();
+    const input = renderer.find('input');
+    input.simulate('keyDown', newValue(''));
+    expect(props.addTodo).toHaveBeenCalledTimes(0);
+    input.simulate('keyDown', newValue('Use Redux', true));
+    expect(props.addTodo).toHaveBeenCalledTimes(1);
   });
 });

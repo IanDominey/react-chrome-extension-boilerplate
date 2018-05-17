@@ -1,6 +1,5 @@
 import path from 'path';
 import webdriver from 'selenium-webdriver';
-import { expect } from 'chai';
 import { delay, startChromeDriver, buildWebDriver } from '../func';
 import footerStyle from '../../app/components/Footer.css';
 import mainSectionStyle from '../../app/components/MainSection.css';
@@ -56,11 +55,11 @@ const deleteTodo = async (driver, index) => {
   return { count: todos.length };
 };
 
-describe('window (popup) page', function test() {
+describe('window (popup) page', () => {
   let driver;
   this.timeout(15000);
 
-  before(async () => {
+  beforeAll(async () => {
     await startChromeDriver();
     const extPath = path.resolve('build');
     driver = buildWebDriver(extPath);
@@ -73,33 +72,33 @@ describe('window (popup) page', function test() {
     await driver.get(`chrome-extension://${extensionId}/window.html`);
   });
 
-  after(async () => driver.quit());
+  afterAll(async () => driver.quit());
 
   it('should open Redux TodoMVC Example', async () => {
     const title = await driver.getTitle();
-    expect(title).to.equal('Redux TodoMVC Example (Window)');
+    expect(title).toBe('Redux TodoMVC Example (Window)');
   });
 
   it('should can add todo', async () => {
     const { todo, count } = await addTodo(driver, 'Add tests');
-    expect(count).to.equal(2);
+    expect(count).toBe(2);
     const text = await todo.findElement(webdriver.By.tagName('label')).getText();
-    expect(text).to.equal('Add tests');
+    expect(text).toBe('Add tests');
   });
 
   it('should can edit todo', async () => {
     const { todo, count } = await editTodo(driver, 0, 'Ya ');
-    expect(count).to.equal(2);
+    expect(count).toBe(2);
     const text = await todo.findElement(webdriver.By.tagName('label')).getText();
-    expect(text).to.equal('Ya Add tests');
+    expect(text).toBe('Ya Add tests');
   });
 
   it('should can complete todo', async () => {
     const { todo, count } = await completeTodo(driver, 0);
-    expect(count).to.equal(2);
+    expect(count).toBe(2);
     const className = await todo.getAttribute('class');
     const { completed, normal } = todoItemStyle;
-    expect(className).to.equal(`${completed} ${normal}`);
+    expect(className).toBe(`${completed} ${normal}`);
   });
 
   it('should can complete all todos', async () => {
@@ -107,45 +106,51 @@ describe('window (popup) page', function test() {
     const todos = await findList(driver);
     const classNames = await Promise.all(todos.map(todo => todo.getAttribute('class')));
     const { completed, normal } = todoItemStyle;
-    expect(classNames.every(name => name === `${completed} ${normal}`)).to.equal(true);
+    expect(classNames.every(name => name === `${completed} ${normal}`)).toBe(true);
   });
 
   it('should can delete todo', async () => {
     const { count } = await deleteTodo(driver, 0);
-    expect(count).to.equal(1);
+    expect(count).toBe(1);
   });
 
-  it('should can clear completed todos if completed todos count > 0', async () => {
-    // current todo count: 1
-    await addTodo(driver, 'Add 1');
-    const { count } = await addTodo(driver, 'Add 2');
-    expect(count).to.equal(3);
+  it(
+    'should can clear completed todos if completed todos count > 0',
+    async () => {
+      // current todo count: 1
+      await addTodo(driver, 'Add 1');
+      const { count } = await addTodo(driver, 'Add 2');
+      expect(count).toBe(3);
 
-    await completeTodo(driver, 0);
-    driver.findElement(webdriver.By.className(footerStyle.clearCompleted)).click();
+      await completeTodo(driver, 0);
+      driver.findElement(webdriver.By.className(footerStyle.clearCompleted)).click();
 
-    const todos = await findList(driver);
-    const classNames = await Promise.all(todos.map(todo => todo.getAttribute('class')));
-    expect(classNames.every(name => name !== 'completed')).to.equal(true);
-  });
+      const todos = await findList(driver);
+      const classNames = await Promise.all(todos.map(todo => todo.getAttribute('class')));
+      expect(classNames.every(name => name !== 'completed')).toBe(true);
+    }
+  );
 
-  it('should cannot clear completed todos if completed todos count = 0', async () => {
-    const todos = await driver.findElements(webdriver.By.className(footerStyle.clearCompleted));
-    expect(todos.length).to.equal(0);
-  });
+  it(
+    'should cannot clear completed todos if completed todos count = 0',
+    async () => {
+      const todos = await driver.findElements(webdriver.By.className(footerStyle.clearCompleted));
+      expect(todos.length).toBe(0);
+    }
+  );
 
   it('should can filter active todos', async () => {
     // current todo count: 2
     await addTodo(driver, 'Add 1');
     const { count } = await addTodo(driver, 'Add 2');
-    expect(count).to.equal(3);
+    expect(count).toBe(3);
 
     await completeTodo(driver, 0);
     let todos = await driver.findElements(webdriver.By.css(`.${footerStyle.filters} > li`));
     todos[1].click();
     await delay(1000);
     todos = await findList(driver);
-    expect(todos.length).to.equal(2);
+    expect(todos.length).toBe(2);
   });
 
   it('should can filter completed todos', async () => {
@@ -154,6 +159,6 @@ describe('window (popup) page', function test() {
     todos[2].click();
     await delay(1000);
     todos = await findList(driver);
-    expect(todos.length).to.equal(1);
+    expect(todos.length).toBe(1);
   });
 });

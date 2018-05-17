@@ -1,7 +1,5 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
 import React from 'react';
-import TestUtils from 'react-dom/test-utils';
+import { mount } from 'enzyme';
 import TodoItem from '../../../app/components/TodoItem';
 import style from '../../../app/components/TodoItem.css';
 import TodoTextInput from '../../../app/components/TodoTextInput';
@@ -13,62 +11,52 @@ function setup(editing = false) {
       text: 'Use Redux',
       completed: false
     },
-    editTodo: sinon.spy(),
-    deleteTodo: sinon.spy(),
-    completeTodo: sinon.spy()
+    editTodo: jest.fn(),
+    deleteTodo: jest.fn(),
+    completeTodo: jest.fn()
   };
 
-  const renderer = TestUtils.createRenderer();
+  const renderer = mount(<TodoItem {...props} />);
 
-  renderer.render(<TodoItem {...props} />);
-
-  let output = renderer.getRenderOutput();
-
-  if (editing) {
-    const label = output.props.children.props.children[1];
-    label.props.onDoubleClick({});
-    output = renderer.getRenderOutput();
-  }
-
-  return { props, output, renderer };
+  return { props, renderer };
 }
 
 describe('todoapp TodoItem component', () => {
   it('should render correctly', () => {
-    const { output } = setup();
+    const { renderer } = setup();
 
-    expect(output.type).to.equal('li');
-    expect(output.props.className).to.equal(style.normal);
+    expect(renderer.name()).toBe('li');
+    expect(renderer.hasClass(style.normal)).toBe(true);
 
-    const div = output.props.children;
+    const div = renderer.children();
 
-    expect(div.type).to.equal('div');
-    expect(div.props.className).to.equal(style.view);
+    expect(div.name()).toBe('div');
+    expect(div.hasClass(style.view)).toBe(true);
 
-    const [input, label, button] = div.props.children;
+    const [input, label, button] = div.children();
 
-    expect(input.type).to.equal('input');
-    expect(input.props.checked).to.equal(false);
+    expect(input.name()).toBe('input');
+    expect(input.prop('checked')).toBe(false);
 
-    expect(label.type).to.equal('label');
-    expect(label.props.children).to.equal('Use Redux');
+    expect(label.name()).toBe('label');
+    expect(label.text()).toBe('Use Redux');
 
-    expect(button.type).to.equal('button');
-    expect(button.props.className).to.equal(style.destroy);
+    expect(button.name()).toBe('button');
+    expect(button.hasClass(style.destroy)).toBe(true);
   });
 
   it('input onChange should call completeTodo', () => {
     const { output, props } = setup();
     const input = output.props.children.props.children[0];
     input.props.onChange({});
-    expect(props.completeTodo.calledWith(0)).to.equal(true);
+    expect(props.completeTodo.calledWith(0)).toBe(true);
   });
 
   it('button onClick should call deleteTodo', () => {
     const { output, props } = setup();
     const button = output.props.children.props.children[2];
     button.props.onClick({});
-    expect(props.deleteTodo.calledWith(0)).to.equal(true);
+    expect(props.deleteTodo.calledWith(0)).toBe(true);
   });
 
   it('label onDoubleClick should put component in edit state', () => {
@@ -76,39 +64,39 @@ describe('todoapp TodoItem component', () => {
     const label = output.props.children.props.children[1];
     label.props.onDoubleClick({});
     const updated = renderer.getRenderOutput();
-    expect(updated.type).to.equal('li');
-    expect(updated.props.className).to.equal(style.editing);
+    expect(updated.type).toBe('li');
+    expect(updated.props.className).toBe(style.editing);
   });
 
   it('edit state render', () => {
     const { output } = setup(true);
 
-    expect(output.type).to.equal('li');
-    expect(output.props.className).to.equal(style.editing);
+    expect(output.type).toBe('li');
+    expect(output.props.className).toBe(style.editing);
 
     const input = output.props.children;
-    expect(input.type).to.equal(TodoTextInput);
-    expect(input.props.text).to.equal('Use Redux');
-    expect(input.props.editing).to.equal(true);
+    expect(input.type).toBe(TodoTextInput);
+    expect(input.props.text).toBe('Use Redux');
+    expect(input.props.editing).toBe(true);
   });
 
   it('TodoTextInput onSave should call editTodo', () => {
     const { output, props } = setup(true);
     output.props.children.props.onSave('Use Redux');
-    expect(props.editTodo.calledWith(0, 'Use Redux')).to.equal(true);
+    expect(props.editTodo.calledWith(0, 'Use Redux')).toBe(true);
   });
 
   it('TodoTextInput onSave should call deleteTodo if text is empty', () => {
     const { output, props } = setup(true);
     output.props.children.props.onSave('');
-    expect(props.deleteTodo.calledWith(0)).to.equal(true);
+    expect(props.deleteTodo.calledWith(0)).toBe(true);
   });
 
   it('TodoTextInput onSave should exit component from edit state', () => {
     const { output, renderer } = setup(true);
     output.props.children.props.onSave('Use Redux');
     const updated = renderer.getRenderOutput();
-    expect(updated.type).to.equal('li');
-    expect(updated.props.className).to.equal(style.normal);
+    expect(updated.type).toBe('li');
+    expect(updated.props.className).toBe(style.normal);
   });
 });

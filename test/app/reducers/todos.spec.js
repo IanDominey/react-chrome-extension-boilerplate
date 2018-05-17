@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import * as types from '../../../app/constants/ActionTypes';
 import todos from '../../../app/reducers/todos';
 
@@ -6,7 +5,7 @@ describe('todoapp todos reducer', () => {
   it('should handle initial state', () => {
     expect(
       todos(undefined, {})
-    ).to.eql([{
+    ).toEqual([{
       text: 'Use Redux',
       completed: false,
       id: 0
@@ -19,7 +18,7 @@ describe('todoapp todos reducer', () => {
         type: types.ADD_TODO,
         text: 'Run the tests'
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Run the tests',
       completed: false,
       id: 0
@@ -34,7 +33,7 @@ describe('todoapp todos reducer', () => {
         type: types.ADD_TODO,
         text: 'Run the tests'
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Run the tests',
       completed: false,
       id: 1
@@ -57,7 +56,7 @@ describe('todoapp todos reducer', () => {
         type: types.ADD_TODO,
         text: 'Fix the tests'
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Fix the tests',
       completed: false,
       id: 2
@@ -86,7 +85,7 @@ describe('todoapp todos reducer', () => {
         type: types.DELETE_TODO,
         id: 1
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Use Redux',
       completed: false,
       id: 0
@@ -108,7 +107,7 @@ describe('todoapp todos reducer', () => {
         text: 'Fix the tests',
         id: 1
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Fix the tests',
       completed: false,
       id: 1
@@ -133,7 +132,7 @@ describe('todoapp todos reducer', () => {
         type: types.COMPLETE_TODO,
         id: 1
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Run the tests',
       completed: true,
       id: 1
@@ -157,7 +156,7 @@ describe('todoapp todos reducer', () => {
       }], {
         type: types.COMPLETE_ALL
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Run the tests',
       completed: true,
       id: 1
@@ -180,7 +179,7 @@ describe('todoapp todos reducer', () => {
       }], {
         type: types.COMPLETE_ALL
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Run the tests',
       completed: false,
       id: 1
@@ -204,7 +203,7 @@ describe('todoapp todos reducer', () => {
       }], {
         type: types.CLEAR_COMPLETED
       })
-    ).to.eql([{
+    ).toEqual([{
       text: 'Use Redux',
       completed: false,
       id: 0
@@ -230,7 +229,7 @@ describe('todoapp todos reducer', () => {
         completed: false,
         text: 'Write tests'
       }])
-    ).to.eql([{
+    ).toEqual([{
       text: 'Write more tests',
       completed: false,
       id: 2

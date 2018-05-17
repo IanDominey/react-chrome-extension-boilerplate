@@ -1,24 +1,23 @@
 import path from 'path';
 import webdriver from 'selenium-webdriver';
-import { expect } from 'chai';
 import { delay, startChromeDriver, buildWebDriver } from '../func';
 
-describe('inject page (in github.com)', function test() {
+describe('inject page (in github.com)', () => {
   let driver;
   this.timeout(15000);
 
-  before(async () => {
+  beforeAll(async () => {
     await startChromeDriver();
     const extPath = path.resolve('build');
     driver = buildWebDriver(extPath);
     await driver.get('https://github.com');
   });
 
-  after(async () => driver.quit());
+  afterAll(async () => driver.quit());
 
   it('should open Github', async () => {
     const title = await driver.getTitle();
-    expect(title).to.equal('The world’s leading software development platform · GitHub');
+    expect(title).toBe('The world’s leading software development platform · GitHub');
   });
 
   it('should render inject app', async () => {

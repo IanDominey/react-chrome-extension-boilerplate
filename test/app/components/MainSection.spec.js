@@ -1,7 +1,5 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
 import React from 'react';
-import TestUtils from 'react-dom/test-utils';
+import { mount } from 'enzyme';
 import MainSection from '../../../app/components/MainSection';
 import style from '../../../app/components/MainSection.css';
 import TodoItem from '../../../app/components/TodoItem';
@@ -20,36 +18,34 @@ function setup(propOverrides) {
       id: 1,
     }],
     actions: {
-      editTodo: sinon.spy(),
-      deleteTodo: sinon.spy(),
-      completeTodo: sinon.spy(),
-      completeAll: sinon.spy(),
-      clearCompleted: sinon.spy(),
+      editTodo: jest.fn(),
+      deleteTodo: jest.fn(),
+      completeTodo: jest.fn(),
+      completeAll: jest.fn(),
+      clearCompleted: jest.fn(),
     },
     ...propOverrides,
   };
 
-  const renderer = TestUtils.createRenderer();
-  renderer.render(<MainSection {...props} />);
-  const output = renderer.getRenderOutput();
+  const renderer = mount(<MainSection {...props} />);
 
-  return { props, output, renderer };
+  return { props, renderer };
 }
 
 describe('todoapp MainSection component', () => {
   it('should render correctly', () => {
-    const { output } = setup();
-    expect(output.type).to.equal('section');
-    expect(output.props.className).to.equal(style.main);
+    const renderer = setup();
+    expect(renderer.name()).toBe('section');
+    expect(renderer).hasClass(style.main);
   });
 
   describe('toggle all input', () => {
     it('should render', () => {
       const { output } = setup();
       const [toggle] = output.props.children;
-      expect(toggle.type).to.equal('input');
-      expect(toggle.props.type).to.equal('checkbox');
-      expect(toggle.props.checked).to.equal(false);
+      expect(toggle.type).toBe('input');
+      expect(toggle.props.type).toBe('checkbox');
+      expect(toggle.props.checked).toBe(false);
     });
 
     it('should be checked if all todos completed', () => {
@@ -61,14 +57,14 @@ describe('todoapp MainSection component', () => {
         }],
       });
       const [toggle] = output.props.children;
-      expect(toggle.props.checked).to.equal(true);
+      expect(toggle.props.checked).toBe(true);
     });
 
     it('should call completeAll on change', () => {
       const { output, props } = setup();
       const [toggle] = output.props.children;
       toggle.props.onChange({});
-      expect(props.actions.completeAll.called).to.equal(true);
+      expect(props.actions.completeAll.called).toBe(true);
     });
   });
 
@@ -76,10 +72,10 @@ describe('todoapp MainSection component', () => {
     it('should render', () => {
       const { output } = setup();
       const [, , footer] = output.props.children;
-      expect(footer.type).to.equal(Footer);
-      expect(footer.props.completedCount).to.equal(1);
-      expect(footer.props.activeCount).to.equal(1);
-      expect(footer.props.filter).to.equal(SHOW_ALL);
+      expect(footer.type).toBe(Footer);
+      expect(footer.props.completedCount).toBe(1);
+      expect(footer.props.activeCount).toBe(1);
+      expect(footer.props.filter).toBe(SHOW_ALL);
     });
 
     it('onShow should set the filter', () => {
@@ -88,39 +84,42 @@ describe('todoapp MainSection component', () => {
       footer.props.onShow(SHOW_COMPLETED);
       const updated = renderer.getRenderOutput();
       const [, , updatedFooter] = updated.props.children;
-      expect(updatedFooter.props.filter).to.equal(SHOW_COMPLETED);
+      expect(updatedFooter.props.filter).toBe(SHOW_COMPLETED);
     });
 
     it('onClearCompleted should call clearCompleted', () => {
       const { output, props } = setup();
       const [, , footer] = output.props.children;
       footer.props.onClearCompleted();
-      expect(props.actions.clearCompleted.called).to.equal(true);
+      expect(props.actions.clearCompleted.called).toBe(true);
     });
 
-    it('onClearCompleted shouldnt call clearCompleted if no todos completed', () => {
-      const { output, props } = setup({
-        todos: [{
-          text: 'Use Redux',
-          completed: false,
-          id: 0,
-        }],
-      });
-      const [, , footer] = output.props.children;
-      footer.props.onClearCompleted();
-      expect(props.actions.clearCompleted.callCount).to.equal(0);
-    });
+    it(
+      'onClearCompleted shouldnt call clearCompleted if no todos completed',
+      () => {
+        const { output, props } = setup({
+          todos: [{
+            text: 'Use Redux',
+            completed: false,
+            id: 0,
+          }],
+        });
+        const [, , footer] = output.props.children;
+        footer.props.onClearCompleted();
+        expect(props.actions.clearCompleted.callCount).toBe(0);
+      }
+    );
   });
 
   describe('todo list', () => {
     it('should render', () => {
       const { output, props } = setup();
       const [, list] = output.props.children;
-      expect(list.type).to.equal('ul');
-      expect(list.props.children.length).to.equal(2);
+      expect(list.type).toBe('ul');
+      expect(list.props.children.length).toBe(2);
       list.props.children.forEach((item, index) => {
-        expect(item.type).to.equal(TodoItem);
-        expect(item.props.todo).to.equal(props.todos[index]);
+        expect(item.type).toBe(TodoItem);
+        expect(item.props.todo).toBe(props.todos[index]);
       });
     });
 
@@ -130,8 +129,8 @@ describe('todoapp MainSection component', () => {
       footer.props.onShow(SHOW_COMPLETED);
       const updated = renderer.getRenderOutput();
       const [, updatedList] = updated.props.children;
-      expect(updatedList.props.children.length).to.equal(1);
-      expect(updatedList.props.children[0].props.todo).to.equal(props.todos[1]);
+      expect(updatedList.props.children.length).toBe(1);
+      expect(updatedList.props.children[0].props.todo).toBe(props.todos[1]);
     });
   });
 });

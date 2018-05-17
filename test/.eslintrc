@@ -1,9 +1,11 @@
 {
   "env": {
-    "mocha": true
+    "jest/globals": true
   },
   "rules": {
     "no-unused-expressions": 0,
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
-  }
+  },
+  "plugins": ["jest"],
+  "extends": ["plugin:jest/recommended"]
 }

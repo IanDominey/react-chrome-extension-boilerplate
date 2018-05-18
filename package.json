@@ -11,7 +11,7 @@
     "lint": "eslint app chrome test scripts webpack/*.js",
     "lint-fix": "eslint --fix app chrome test scripts webpack/*.js",
     "test-e2e": "cross-env NODE_ENV=test jest test/e2e",
-    "test": "cross-env NODE_ENV=test jest --config=./jest-test.config.js ./test/app/Components/TodoItem.spec.js"
+    "test": "cross-env NODE_ENV=test jest --config=./jest-test.config.js ./test/app"
   },
   "repository": {
     "type": "git",

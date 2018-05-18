@@ -34,8 +34,8 @@ function setup(propOverrides) {
 
 describe('todoapp MainSection component', () => {
   it('should render correctly', () => {
-    const renderer = setup();
-    expect(renderer.name()).toBe('section');
+    const { renderer } = setup();
+    expect(renderer.first().name()).toBe('section');
     expect(renderer).hasClass(style.main);
   });
 
@@ -95,19 +95,19 @@ describe('todoapp MainSection component', () => {
     });
 
     it(
-      'onClearCompleted shouldnt call clearCompleted if no todos completed',
-      () => {
-        const { output, props } = setup({
-          todos: [{
-            text: 'Use Redux',
-            completed: false,
-            id: 0,
-          }],
-        });
-        const [, , footer] = output.props.children;
-        footer.props.onClearCompleted();
-        expect(props.actions.clearCompleted.callCount).toBe(0);
-      }
+        'onClearCompleted shouldnt call clearCompleted if no todos completed',
+        () => {
+          const { output, props } = setup({
+            todos: [{
+              text: 'Use Redux',
+              completed: false,
+              id: 0,
+            }],
+          });
+          const [, , footer] = output.props.children;
+          footer.props.onClearCompleted();
+          expect(props.actions.clearCompleted.callCount).toBe(0);
+        }
     );
   });
 
@@ -124,12 +124,11 @@ describe('todoapp MainSection component', () => {
     });
 
     it('should filter items', () => {
-      const { output, renderer, props } = setup();
-      const [, , footer] = output.props.children;
-      footer.props.onShow(SHOW_COMPLETED);
-      const updated = renderer.getRenderOutput();
-      const [, updatedList] = updated.props.children;
-      expect(updatedList.props.children.length).toBe(1);
+      const { renderer, props } = setup();
+      const showCompletedLink = renderer.find('footer > a').findWhere((n) => n.text() === SHOW_COMPLETED);
+      console.log(showCompletedLink.debug());
+
+      expect(renderer.getProp(children).length).toBe(1);
       expect(updatedList.props.children[0].props.todo).toBe(props.todos[1]);
     });
   });

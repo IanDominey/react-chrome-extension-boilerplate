@@ -10,7 +10,7 @@
     "clean": "rimraf build/ dev/ *.zip *.crx",
     "lint": "eslint app chrome test scripts webpack/*.js",
     "lint-fix": "eslint --fix app chrome test scripts webpack/*.js",
-    "test-e2e": "cross-env NODE_ENV=test jest test/e2e",
+    "test-e2e": "cross-env NODE_ENV=test jest --config=./jest-e2e.config.js test/e2e",
     "test": "cross-env NODE_ENV=test jest --config=./jest-test.config.js ./test/app"
   },
   "repository": {

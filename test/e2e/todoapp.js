@@ -135,7 +135,7 @@ describe('window (popup) page', () => {
     'should cannot clear completed todos if completed todos count = 0',
     async () => {
       const todos = await driver.findElements(webdriver.By.className(footerStyle.clearCompleted));
-      expect(todos.length).toBe(0);
+      expect(todos).toHaveLength(0);
     }
   );
 
@@ -150,7 +150,7 @@ describe('window (popup) page', () => {
     todos[1].click();
     await delay(1000);
     todos = await findList(driver);
-    expect(todos.length).toBe(2);
+    expect(todos).toHaveLength(2);
   });
 
   it('should can filter completed todos', async () => {
@@ -159,6 +159,6 @@ describe('window (popup) page', () => {
     todos[2].click();
     await delay(1000);
     todos = await findList(driver);
-    expect(todos.length).toBe(1);
+    expect(todos).toHaveLength(1);
   });
 });

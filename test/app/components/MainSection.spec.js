@@ -119,9 +119,9 @@ describe('todoapp MainSection component', () => {
   describe('todo list', () => {
     it('should render', () => {
       const { renderer, props } = setup();
-      const list = renderer.find(`.${style.todoList}`)
+      const list = renderer.find(`.${style.todoList}`);
       expect(list.type()).toBe('ul');
-      expect(list.children().length).toBe(2);
+      expect(list.children()).toHaveLength(2);
       list.children().forEach((item, index) => {
         expect(item.type()).toBe(TodoItem);
         expect(item.prop('todo')).toBe(props.todos[index]);

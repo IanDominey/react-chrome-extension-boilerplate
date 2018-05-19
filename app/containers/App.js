@@ -7,14 +7,15 @@ import MainSection from '../components/MainSection';
 import * as TodoActions from '../actions/todos';
 import style from './App.css';
 
-@connect(
+connect(
   state => ({
     todos: state.todos
   }),
   dispatch => ({
     actions: bindActionCreators(TodoActions, dispatch)
   })
-)
+);
+
 export default class App extends Component {
 
   static propTypes = {

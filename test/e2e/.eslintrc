@@ -1,0 +1,8 @@
+{
+  "globals": {
+    "driver": true,
+    "By": true,
+    "until": true,
+    "configuration": true
+  }
+}

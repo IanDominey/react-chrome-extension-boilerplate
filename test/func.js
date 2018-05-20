@@ -16,7 +16,6 @@ export function startChromeDriver() {
 
 export function buildWebDriver(extPath) {
   return new webdriver.Builder()
-    .usingServer('http://localhost:9515')
     .withCapabilities({
       chromeOptions: {
         args: [`load-extension=${extPath}`]

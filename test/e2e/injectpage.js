@@ -1,51 +1,33 @@
-import path from 'path';
-import webdriver from 'selenium-webdriver';
-import { delay, startChromeDriver, buildWebDriver } from '../func';
-
 describe('inject page (in github.com)', () => {
-  let driver;
-  this.timeout(15000);
 
   beforeAll(async () => {
-    await startChromeDriver();
-    const extPath = path.resolve('build');
-    driver = buildWebDriver(extPath);
     await driver.get('https://github.com');
   });
 
-  afterAll(async () => driver.quit());
-
   it('should open Github', async () => {
     const title = await driver.getTitle();
-    expect(title).toBe('The world’s leading software development platform · GitHub');
+    return await expect(title).toBe('The world’s leading software development platform · GitHub');
   });
 
   it('should render inject app', async () => {
-    await driver.wait(
-      () => driver.findElements(webdriver.By.className('inject-react-example'))
-        .then(elems => elems.length > 0),
-      10000,
-      'Inject app not found'
-    );
+    const elements = await driver.findElements(By.className('inject-react-example'));
+    return await expect(elements).not.toHaveLength(0);
   });
 
   it('should find `Open TodoApp` button', async () => {
-    await driver.wait(
-      () => driver.findElements(webdriver.By.css('.inject-react-example button'))
-        .then(elems => elems.length > 0),
-      10000,
-      'Inject app `Open TodoApp` button not found'
+    const button = await driver.wait(
+      () => driver.findElements(By.css('.inject-react-example button')),
+      10000
     );
+    return await expect(button).not.toHaveLength(0);
   });
 
   it('should find iframe', async () => {
-    driver.findElement(webdriver.By.css('.inject-react-example button')).click();
-    await delay(1000);
-    await driver.wait(
-      () => driver.findElements(webdriver.By.css('.inject-react-example iframe'))
-        .then(elems => elems.length > 0),
-      10000,
-      'Inject app iframe not found'
+    await driver.findElement(By.css('.inject-react-example button')).click();
+    const iframe = await driver.wait(
+      () => driver.findElements(By.css('.inject-react-example iframe')),
+      10000
     );
+    return await expect(iframe).not.toHaveLength(0);
   });
 });

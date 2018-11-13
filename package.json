@@ -59,7 +59,7 @@
     "react-addons-test-utils": "^15.0.2",
     "rimraf": "^2.4.3",
     "selenium-webdriver": "^3.6.0",
-    "shelljs": "^0.8.2",
+    "shelljs": "0.8.2",
     "sinon": "^5.0.7",
     "style-loader": "^0.21.0",
     "webpack": "^4.8.3",

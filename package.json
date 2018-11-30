@@ -41,7 +41,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babel-runtime": "^6.3.19",
     "chai": "^4.1.2",
-    "chromedriver": "^2.33.2",
+    "chromedriver": "^2.44.1",
     "cross-env": "^5.1.5",
     "crx": "^3.0.3",
     "css-loader": "^0.28.11",

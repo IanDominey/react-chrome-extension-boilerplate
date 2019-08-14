@@ -57,7 +57,7 @@
     "postcss-loader": "^2.1.5",
     "pug-cli": "^1.0.0-alpha6",
     "react-addons-test-utils": "^15.0.2",
-    "rimraf": "^2.4.3",
+    "rimraf": "^2.7.1",
     "selenium-webdriver": "^3.6.0",
     "shelljs": "^0.8.2",
     "sinon": "^5.0.7",

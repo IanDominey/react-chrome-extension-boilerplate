@@ -62,7 +62,7 @@
     "shelljs": "^0.8.2",
     "sinon": "^5.0.7",
     "style-loader": "^0.21.0",
-    "webpack": "^4.8.3",
+    "webpack": "^4.43.0",
     "webpack-hot-middleware": "^2.10.0",
     "webpack-httpolyglot-server": "^0.3.0"
   },

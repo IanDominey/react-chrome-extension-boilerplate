@@ -44,7 +44,7 @@
     "chromedriver": "^2.33.2",
     "cross-env": "^5.1.5",
     "crx": "^3.0.3",
-    "css-loader": "^0.28.11",
+    "css-loader": "^3.5.3",
     "css-modules-require-hook": "^4.0.5",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
